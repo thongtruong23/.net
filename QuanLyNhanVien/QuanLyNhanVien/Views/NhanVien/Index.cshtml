@@ -1,0 +1,100 @@
+﻿@model PagedList.IPagedList<QuanLyNhanVien.Models.NhanVien>
+
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Index";
+   
+}
+
+<h2>Danh sách nhân viên</h2>
+
+<p>
+    @Html.ActionLink("Thêm mới nhân viên", "Create")
+</p>
+
+<div>
+    @using (Html.BeginForm("Index", "NhanVien", FormMethod.Get))
+    {
+        <div class="row">
+            <div class="align-content-lg-center">
+                <div class="col-md-2">
+                    <input type="text" value="@ViewBag.Keyword" name="searchString" />
+
+                </div>
+                <div class="col-md-2">
+                    <button type="submit">Tìm kiếm</button>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+</div>
+
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            Họ Và Tên
+        </th>
+        <th>
+           Gới tính
+        </th>
+        <th>
+            @Html.Display("Địa Chỉ")
+        </th>
+        <th>
+            @Html.Display("Địa Chỉ Email")
+        </th>
+        <th>
+            @Html.Display("Số Điện Thoại")
+        </th>
+        <th>
+            @Html.Display("Chứng Minh Thư")
+        </th>
+        <th>
+            @Html.Display("Chức Vụ")
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoVaTen)
+            </td>
+            <td>
+                @(item.GioiTinh?"Nam":"Nữ")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoDienThoai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CMND)
+            </td>
+            <td>
+                @(item.ChucVu==null?"":item.ChucVu.TenChucVu)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, @searchString = ViewBag.Keyword}))
